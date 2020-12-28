@@ -4,6 +4,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
+    print('dziala ?')
     return render_template('index.html')
 
 
