@@ -2,6 +2,7 @@ import hashlib
 import random
 import string
 
+
 def hash_password(password, salt=None):
     """
     Hashes the password with salt as an optional parameter.
@@ -14,7 +15,7 @@ def hash_password(password, salt=None):
     :return: hashed password
     """
 
-    if salt is None:
+    if salt == None or salt == "":
         salt = generate_salt()
 
     salt = salt + ("a" * (16 - len(salt))) if len(salt) < 16 else salt[:16]
@@ -52,6 +53,6 @@ def generate_salt():
     salt = ""
     for i in range(0, 16):
         salt += random.choice(string.ascii_lowercase + string.ascii_uppercase)
-        
+
     return salt
 
