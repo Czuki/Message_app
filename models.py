@@ -32,9 +32,9 @@ class User:
                 values = (self.username, self.hashed_password)
                 cursor.execute(sql, values)
                 self._id = cursor.fetchone()[0]  # or cursor.fetchone()['id']
-            except IntegrityError as err:
+            except IntegrityError:
                 print('User already exists')
-                return err
+                return False
             return True
         else:
             sql = """UPDATE Users SET username=%s, hashed_password=%s
@@ -75,6 +75,7 @@ class User:
             loaded_user._hashed_password = hashed_password
             return loaded_user
         else:
+            print(f'No username: {username}')
             return None
 
     @staticmethod

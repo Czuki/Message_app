@@ -24,6 +24,9 @@ def hash_password(password, salt=None):
 
     return salt + t_sha.hexdigest()
 
+
+
+
 def check_password(pass_to_check, hashed):
     """
     Checks the password.
