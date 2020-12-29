@@ -1,6 +1,6 @@
-from pwd_utilities import hash_password, check_password, generate_salt
-from psycopg2 import connect, OperationalError, ProgrammingError, IntegrityError
-
+from clcrypto import hash_password
+from psycopg2 import connect, OperationalError, IntegrityError
+from datetime import datetime
 
 
 class User:
@@ -92,16 +92,55 @@ class User:
         return users
 
 class Messages:
-    def __init__(self, from_id, to_id):
+    def __init__(self, from_id='', to_id='', text=''):
         self._id = -1
+        self.from_id = from_id
+        self.to_id = to_id
+        self.text = text
+        self.creation_date = None
 
+    @property
+    def id(self):
+        return self._id
 
+    def save_to_db(self, cursor):
+        if self._id == -1:
+            try:
+                sql = """INSERT INTO messages(from_id, to_id, creation_date, text)
+                                VALUES(%s, %s, %s, %s) RETURNING id"""
+                self.creation_date = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+                values = (self.from_id, self.to_id, self.creation_date, self.text)
+                cursor.execute(sql, values)
+                self._id = cursor.fetchone()[0]  # or cursor.fetchone()['id']
+            except OperationalError as err:
+                return err
+            return True
+        else:
+            sql = """UPDATE messages SET from_id=%s, to_id=%s, text=%s
+                           WHERE id=%s"""
+            values = (self.from_id, self.to_id, self.text, self.id)
+            cursor.execute(sql, values)
+            return True
 
+    @staticmethod
+    def load_all_messages(cursor):
+        sql = "SELECT id, from_id, to_id, text, creation_date FROM messages;"
+        messages = []
+        cursor.execute(sql)
+        for row in cursor.fetchall():
+            id_, from_id, to_id, text, creation_date = row
+            loaded_message = Messages()
+            loaded_message._id = id_
+            loaded_message.from_id = from_id
+            loaded_message.to_id = to_id
+            loaded_message.text = text
+            loaded_message.creation_date = creation_date
+            messages.append(loaded_message)
+        return messages
 
 # cnx = connect(user="postgres", password="coderslab", host="localhost", database="workshop")
 # cursor = cnx.cursor()
 # cnx.autocommit = True
-#
 #
 # cursor.close()
 # cnx.close()
