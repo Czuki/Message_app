@@ -14,10 +14,10 @@ def create_parser():
     parser_ = argparse.ArgumentParser()
     parser_.add_argument("-u", "--username", help="username")
     parser_.add_argument("-p", "--password", help="password")
-    parser_.add_argument("-n", "--new_pass", help="new password")
-    parser_.add_argument("-l", "--list", help="list all users" ,action="store_true")
-    parser_.add_argument("--delete", help="delete user", action="store_true")
-    parser_.add_argument("-e", "--edit", help="edit user", action="store_true")
+    parser_.add_argument("-n", "--new_pass", help="new_pass")
+    parser_.add_argument("-l", "--list", help="list_users" ,action="store_true")
+    parser_.add_argument("--delete", help="delete_user", action="store_true")
+    parser_.add_argument("-e", "--edit", help="edit_user", action="store_true")
     args_ = parser_.parse_args()
 
     return parser_, args_
