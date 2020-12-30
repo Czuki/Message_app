@@ -1,5 +1,5 @@
 from clcrypto import hash_password
-from psycopg2 import connect, OperationalError, IntegrityError
+from psycopg2 import OperationalError, IntegrityError
 from datetime import datetime
 
 
@@ -138,10 +138,3 @@ class Messages:
             loaded_message.creation_date = creation_date
             messages.append(loaded_message)
         return messages
-
-# cnx = connect(user="postgres", password="coderslab", host="localhost", database="workshop")
-# cursor = cnx.cursor()
-# cnx.autocommit = True
-#
-# cursor.close()
-# cnx.close()

@@ -15,7 +15,7 @@ def hash_password(password, salt=None):
     :return: hashed password
     """
 
-    if salt == None or salt == "":
+    if salt is None or salt == "":
         salt = generate_salt()
 
     salt = salt + ("a" * (16 - len(salt))) if len(salt) < 16 else salt[:16]
@@ -23,8 +23,6 @@ def hash_password(password, salt=None):
     t_sha.update(salt.encode('utf-8') + password.encode('utf-8'))
 
     return salt + t_sha.hexdigest()
-
-
 
 
 def check_password(pass_to_check, hashed):
@@ -47,6 +45,7 @@ def check_password(pass_to_check, hashed):
 
     return new_hash[16:] == hash_to_check
 
+
 def generate_salt():
     """
     Generates a 16-character random salt.
@@ -58,4 +57,3 @@ def generate_salt():
         salt += random.choice(string.ascii_lowercase + string.ascii_uppercase)
 
     return salt
-

@@ -3,6 +3,13 @@ import clcrypto
 from models import Messages, User
 from psycopg2 import connect
 
+
+#Lists of bool values to determine what arguments were used during console execute
+LIST_MSG_KEY = [True, True, False, False, True]
+SEND_MSG_KEY = [True, True, True, True, False]
+#---------------------------------------------------------
+
+
 def create_parser():
     parser_ = argparse.ArgumentParser()
     parser_.add_argument("-u", "--username", help="username")
@@ -14,6 +21,30 @@ def create_parser():
 
     return parser_, args_
 
+
+def list_messages(cursor, args):
+    current_user = User.load_user_by_username(cursor, args.username)
+    if current_user:
+        if clcrypto.check_password(args.password, current_user.hashed_password):
+            print(f'Message list for user: {args.username}')
+            msg_list = Messages.load_all_messages(cursor, current_user.id)
+            for msg in msg_list:
+                from_user = User.load_user_by_id(cursor, msg.from_id)
+                print(f'{msg.id} -- {msg.text} -- From: {from_user.username} -- Date: {msg.creation_date}')
+        else:
+            print('Incorrect password')
+
+
+def send_message(cursor, args):
+    current_user = User.load_user_by_username(cursor, args.username)
+    receiving_user = User.load_user_by_username(cursor, args.to)
+    to_user_id = receiving_user.id
+    if current_user:
+        if clcrypto.check_password(args.password, current_user.hashed_password):
+            message = Messages(current_user.id, to_user_id, ' '.join(args.send))
+            message.save_to_db(cursor)
+
+
 if __name__ == '__main__':
 
     parser, args = create_parser()
@@ -22,35 +53,13 @@ if __name__ == '__main__':
     cursor = cnx.cursor()
     cnx.autocommit = True
 
-    username, password, to_user, msg_text, msg_list = tuple(vars(args).values())
-
     user_choice_key = [bool(arg) for arg in vars(args).values()]
-    list_msg_key = [True, True, False, False, True]
-    send_msg_key = [True, True, True, True, False]
 
-    if user_choice_key == list_msg_key:
-        current_user = User.load_user_by_username(cursor, username)
-        if current_user:
-            if clcrypto.check_password(password, current_user.hashed_password):
-                print(f'Message list for user: {username}')
-                msg_list = Messages.load_all_messages(cursor, current_user.id)
+    if user_choice_key == LIST_MSG_KEY:
+        list_messages(cursor, args)
+    elif user_choice_key == SEND_MSG_KEY:
+        send_message(cursor, args)
+    else:
+        parser.print_help()
 
-                for msg in msg_list:
-                    from_user = User.load_user_by_id(cursor, msg.from_id)
-                    print(f'{msg.id} -- {msg.text} -- From: {from_user.username} -- Date: {msg.creation_date}')
-            else:
-                print('Incorrect password')
-
-    elif user_choice_key == send_msg_key:
-        current_user = User.load_user_by_username(cursor, username)
-        receiving_user = User.load_user_by_username(cursor, to_user)
-        to_user_id = receiving_user.id
-
-        print(to_user_id)
-        if current_user:
-            if clcrypto.check_password(password, current_user.hashed_password):
-                print(type(msg_text))
-                print(msg_text)
-                message = Messages(current_user.id, to_user_id, ' '.join(msg_text))
-                message.save_to_db(cursor)
-
+    cnx.close()
