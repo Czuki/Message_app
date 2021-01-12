@@ -1,21 +1,23 @@
 from psycopg2 import connect, OperationalError, ProgrammingError
 
-username = "postgres"
-password = "coderslab"
-hostname = "localhost"
+username = ""
+password = ""
+hostname = ""
 
-def sql_execute_and_close_cnx(sql, dbname=''):
-    cnx = connect(user="postgres", password="coderslab", host="localhost", database=dbname)
-    cursor = cnx.cursor()
+def connect_to_db(database=''):
+    cnx = connect(user=username, password=password, host=hostname, database=database)
     cnx.autocommit = True
-    cursor.execute(sql)
-    cursor.close()
-    cnx.close()
+    cursor = cnx.cursor()
+    return cursor
+
+def execute_sql(sql,database=''):
+    with connect_to_db(database) as cursor:
+        cursor.execute(sql)
 
 def create_workshop_db():
     try:
         sql = "CREATE DATABASE workshop"
-        sql_execute_and_close_cnx(sql)
+        execute_sql(sql)
         print('Database Created')
     except ProgrammingError as err:
         print(err)
@@ -32,7 +34,7 @@ def create_table_users():
         hashed_password varchar(80)
         );
         """
-        sql_execute_and_close_cnx(sql, 'workshop')
+        execute_sql(sql, 'workshop')
         print('Table Created')
     except ProgrammingError as err:
         print(err)
@@ -48,16 +50,17 @@ def create_table_messages():
         from_id integer,
         to_id integer,
         creation_date timestamp,
-        foreign key (from_id) references users(id),
-        foreign key (from_id) references users(id)
+        foreign key (from_id) references users(id) ON DELETE CASCADE,
+        foreign key (from_id) references users(id) ON DELETE CASCADE
         );
         """
-        sql_execute_and_close_cnx(sql, 'workshop')
+        execute_sql(sql, 'workshop')
         print('Table Created')
     except ProgrammingError as err:
         print(err)
     except OperationalError as err:
         print(err)
+
 
 create_workshop_db()
 create_table_users()
