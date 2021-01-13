@@ -14,20 +14,20 @@ Modify 'create_db.py' with your database username, password, hostname, and execu
 Add users with 'users_app.py' file
 
 
-- python3 users_app.py -u <username> -p <password>
+- python3 users_app.py -u "username" -p "password"
 
 
 To change password for user
 
-- python3 users_app.py -u <username> -p <password> -e -n <new_password>
+- python3 users_app.py -u "username" -p "password" -e -n "new_password"
 
 To list all created users 
 
-- python3 users_app.py -u <username> -p <password> -l
+- python3 users_app.py -u "username" -p "password" -l
 
 To delete user
 
-- python3 users_app.py -u <username> -p <password> --delete
+- python3 users_app.py -u "username" -p "password" --delete
 
 Execute file without arguments to see available commands
 
