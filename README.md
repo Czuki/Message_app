@@ -36,7 +36,7 @@ Execute file without arguments to see available commands
 
 Sending Messages
 
-- python3 message_app.py -u "username" -p "password" -t "receiver" -s "message"
+- python3 message_app.py -u "username" -p "password" -t "receiving_user" -s "message"
 
 Check Messages
 
