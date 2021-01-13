@@ -31,3 +31,14 @@ To delete user
 
 Execute file without arguments to see available commands
 
+
+---
+
+Sending Messages
+
+- python3 message_app.py -u "username" -p "password" -t "receiver" -s "message"
+
+Check Messages
+
+- python3 message_app.py -u "username" -p "password" -l
+
