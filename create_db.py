@@ -1,8 +1,8 @@
 from psycopg2 import connect, OperationalError, ProgrammingError
 
-username = ""
-password = ""
-hostname = ""
+username = "postgres"
+password = 'coderslab'
+hostname = "localhost"
 
 def connect_to_db(database=''):
     cnx = connect(user=username, password=password, host=hostname, database=database)
@@ -50,6 +50,7 @@ def create_table_messages():
         from_id integer,
         to_id integer,
         creation_date timestamp,
+        text varchar(200),
         foreign key (from_id) references users(id) ON DELETE CASCADE,
         foreign key (from_id) references users(id) ON DELETE CASCADE
         );
