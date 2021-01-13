@@ -1,8 +1,8 @@
 from psycopg2 import connect, OperationalError, ProgrammingError
 
-username = "postgres"
-password = 'coderslab'
-hostname = "localhost"
+username = ''
+password = ''
+hostname = ''
 
 def connect_to_db(database=''):
     cnx = connect(user=username, password=password, host=hostname, database=database)
