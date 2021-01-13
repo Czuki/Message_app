@@ -1,6 +1,6 @@
 # Message_app
 
-Small console based app that allows to add users to database and send messages between users.
+Small console based app that allows to add users to database and send messages between them.
 
 ## Required modules
 
